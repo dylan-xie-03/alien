@@ -65,6 +65,17 @@ class Scoreboard:
             self.stats.high_score = self.stats.score
             self.prep_high_score()
 
+    def write_high_score_to_file(self):
+        with open("All_Time_High_Score.txt", 'r') as f:
+            high_score_in_file = int(f.read())
+        with open("All_Time_High_Score.txt", 'w') as f:
+            if self.stats.high_score > high_score_in_file:
+                f.write(str(self.stats.score))
+            # if not add this else condition, the file will be empty when you directly quit the game without gain a point.
+            else:
+                f.write(str(high_score_in_file))
+
+
     def prep_level(self):
         """Turn the level into a rendered image."""
         level_str = str(self.stats.level)

@@ -56,6 +56,7 @@ class AlienInvasion:
         """Respond to keypresses and mouse events"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.sb.write_high_score_to_file()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
@@ -72,6 +73,7 @@ class AlienInvasion:
             # Reset the game settings.
             self.settings.initialize_dynamic_settings()
             self._restart_game()
+        self.sb.write_high_score_to_file()
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -80,19 +82,18 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
+            self.sb.write_high_score_to_file()
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
         elif event.key == pygame.K_p:
+            self.sb.write_high_score_to_file()
             self._restart_game()
 
     def _restart_game(self):
         # Reset the game statistics.
         self.stats.reset_stats()
         self.stats.game_active = True
-        # self.sb.prep_score()
-        # self.sb.prep_level()
-        # self.sb.prep_ships()
         self.sb.prep_images()
 
         # Get rid of any remaining aliens and bullets.
