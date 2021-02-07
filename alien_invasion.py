@@ -9,6 +9,7 @@ from bullet import Bullet
 from alien import Alien
 from button import Button
 from scoreboard import Scoreboard
+from sounds import Sounds
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -30,6 +31,7 @@ class AlienInvasion:
         # and create a scoreboard.
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
+        self.sounds = Sounds(self)
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -49,6 +51,7 @@ class AlienInvasion:
                 self.ship.update()
                 self._update_bullets()
                 self._update_aliens()
+
 
             self._update_screen()
 
@@ -95,6 +98,7 @@ class AlienInvasion:
         self.stats.reset_stats()
         self.stats.game_active = True
         self.sb.prep_images()
+        self.sounds.play_music_danger()
 
         # Get rid of any remaining aliens and bullets.
         self.aliens.empty()
@@ -143,6 +147,7 @@ class AlienInvasion:
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
             self.sb.check_high_score()
+            self.sounds.play_music_answer()
 
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
@@ -160,6 +165,7 @@ class AlienInvasion:
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
+            self.sounds.play_music_collision()
             self.stats.ships_left -= 1
             self.sb.prep_ships()
 
@@ -173,6 +179,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.stats.game_active = False
+            self.sounds.play_music_gameover()
             pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
