@@ -20,12 +20,13 @@ class AlienInvasion:
 
         self.settings = Settings()
 
-        self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode(
+            (self.settings.screen_width, self.settings.screen_height))
+        pygame.display.set_caption("Alien Invasion")
+
+        # self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_hight = self.screen.get_rect().height
-        # self.screen = pygame.display.set_mode(
-        #     (self.settings.screen_width, self.settings.screen_height))
-        pygame.display.set_caption("Alien Invasion")
 
         # Create an instance to store game statistics,
         # and create a scoreboard.
@@ -76,7 +77,7 @@ class AlienInvasion:
             # Reset the game settings.
             self.settings.initialize_dynamic_settings()
             self._restart_game()
-        self.sb.write_high_score_to_file()
+            self.sb.write_high_score_to_file()
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -100,6 +101,7 @@ class AlienInvasion:
         self.sb.prep_images()
         self.sounds.play_music_danger()
 
+
         # Get rid of any remaining aliens and bullets.
         self.aliens.empty()
         self.bullets.empty()
@@ -110,6 +112,7 @@ class AlienInvasion:
 
         # Hide the mouse cursor.
         pygame.mouse.set_visible(False)
+        self.sounds.play_music_background()
 
     def _check_keyup_events(self, event):
         """Response to key releases."""
@@ -147,7 +150,7 @@ class AlienInvasion:
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
             self.sb.check_high_score()
-            self.sounds.play_music_answer()
+            self.sounds.play_music_hitAlien()
 
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
@@ -180,6 +183,7 @@ class AlienInvasion:
         else:
             self.stats.game_active = False
             self.sounds.play_music_gameover()
+            self.sounds.stop_music()
             pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
@@ -264,7 +268,8 @@ class AlienInvasion:
         if not self.stats.game_active:
             self.play_button.draw_button()
 
-        pygame.display.flip()
+        # https://stackoverflow.com/questions/29314987/difference-between-pygame-display-update-and-pygame-display-flip
+        pygame.display.update()
 
 
 
